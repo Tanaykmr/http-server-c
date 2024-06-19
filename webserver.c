@@ -32,28 +32,23 @@ int main() {
     printf("socket successfully bound to address\n");
 
     // listening for incoming connections
-    if (listen(sockfd, SOMAXCONN) != 0) {
-        perror("webserver(listen)");
-        close(sockfd);
-        return 1;
+    if (listen(sockfd, SOMAXCONN) != 0) {perror("webserver(listen)");close(sockfd);return 1;
     }
     printf("server listening for connections\n");
 
     while (1) {
-        struct sockaddr_in6 client_addr;
-        socklen_t client_addrlen = sizeof(client_addr);
-        int new_socket = accept(sockfd, (struct sockaddr *)&client_addr, &client_addrlen);
+        struct sockaddr_in6 client_addr; socklen_t client_addrlen = sizeof(client_addr);
+       			 int new_socket = accept(sockfd, (struct sockaddr *)&client_addr, &client_addrlen);
         if (new_socket < 0) {
-            perror("webserver(accept)");
-            continue;
+            perror("webserver(accept)");continue;
         }
 
         printf("New connection accepted\n");
 
         // Closing the new socket after handling the connection (not shown here)
-        close(new_socket);
+       							 close(new_socket);
     }
 
-    close(sockfd);
+    				close(sockfd);
     return 0;
 }
