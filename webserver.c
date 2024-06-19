@@ -27,6 +27,10 @@ int main()
     host_addr.sin6_port = htons(PORT);
     host_addr.sin6_addr = in6addr_any; // Bind to any address
 
+    // Create client address
+    struct sockaddr_in client_addr;
+    int client_addrlen = sizeof(client_addr);
+
     // binding the socket to an address
     if (bind(sockfd, (struct sockaddr *)&host_addr, host_addrlen) != 0)
     {
@@ -68,21 +72,41 @@ int main()
             continue;
         }
 
+        // Read the request
+        char method[BUFFER_SIZE], uri[BUFFER_SIZE], version[BUFFER_SIZE];
+        sscanf(buffer, "%s %s %s", method, uri, version);
+        printf("[%s:%u] %s %s %s\n", inet_ntoa(client_addr.sin_addr),
+               ntohs(client_addr.sin_port), method, version, uri);
+
         // Write to the socket
-        const char *resp = "HTTP/1.1 200 OK\r\nContent-Length: 13\r\n\r\nHello, world!";
+        // const char *resp = "HTTP/1.1 200 OK\r\nContent-Length: 13\r\n\r\nHello, world!";
+        // use either the above or below, the only difference being that the latter response is more detailed
+        char resp[] = "HTTP/1.1 200 OK\r\n"
+                      "Server: webserver-c\r\n"
+                      "Content-type: text/html\r\n\r\n"
+                      "<html>hello, world</html>\r\n";
 
         int valwrite = write(new_socket, resp, strlen(resp));
         if (valwrite < 0)
         {
             perror("webserver (write)");
-            close(new_socket); //maybe we will have to keep this open, let's see
+            close(new_socket); // maybe we will have to keep this open, let's see
+            continue;
+        }
+
+        // Get client address
+        int sockn = getsockname(new_socket, (struct sockaddr *)&client_addr,
+                                (socklen_t *)&client_addrlen);
+        printf("sockn: ", sockn, "\n");
+        if (sockn < 0)
+        {
+            perror("webserver (getsockname)");
             continue;
         }
 
         // Closing the new socket after handling the connection (not shown here)
         close(new_socket);
     }
-
 
     return 0;
 }
