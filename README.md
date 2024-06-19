@@ -1,6 +1,8 @@
 # HTTP Server in C
 Resource: https://bruinsslot.jp/post/simple-http-webserver-in-c/
 
+My Notes: https://drive.google.com/file/d/1XxhE8DmnBPfnTTaZHJDpgnjdg8sJAMxK/view
+
 ### Webserver
 A webserver, and in this case on the software side is able to satisfy client requests over HTTP, and other several related protocols. Its primary function is to store, process, deliver files to that client. At minimum this is an HTTP Server, which is a piece of software that understand URLs (Universal Resource Locator) and HTTP (Hypertext Transfer Protocol).
 
